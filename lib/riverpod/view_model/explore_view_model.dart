@@ -65,14 +65,8 @@ class ExploreViewModel extends StateNotifier<ExploreViewModelState> {
   }
 
   Future<void> fetchAndAppend(int page, {bool prepend = false}) async {
-    final res = await FlowsService.instance.explore(page);
-    if (res['success'] as bool) {
-      final resultList = res['result'] as List<dynamic>;
-      final result = resultList
-          .map((e) => VideoItemModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-      setVideoController(result, prepend: prepend);
-    }
+    final result = await FlowsService.instance.explore(page);
+    setVideoController(result, prepend: prepend);
   }
 
   void stopControllerAtIndex(int index) {
@@ -124,24 +118,12 @@ class ExploreViewModel extends StateNotifier<ExploreViewModelState> {
   }
 
   Future<List<VideoItemModel>> fetchPage(int page) async {
-    final res = await FlowsService.instance.explore(page);
-    try {
-      if (res['success'] as bool) {
-        final resultList = res['result'] as List<dynamic>;
-        final result = resultList
-            .map((e) => VideoItemModel.fromJson(e as Map<String, dynamic>))
-            .toList();
-        setVideoController(result);
-        await initializeControllerAtIndex(0);
-        await initializeControllerAtIndex(1);
-        playControllerAtIndex(0);
-        return result;
-      } else {
-        return [];
-      }
-    } catch (e) {
-      return [];
-    }
+    final result = await FlowsService.instance.explore(page);
+    setVideoController(result);
+    await initializeControllerAtIndex(0);
+    await initializeControllerAtIndex(1);
+    playControllerAtIndex(0);
+    return result;
   }
 
   void playPrevious(int index) {

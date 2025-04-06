@@ -1,7 +1,9 @@
 // ignore_for_file: inference_failure_on_instance_creation
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:preload_video/bloc/preload_cubit.dart';
 import 'package:preload_video/bloc/video_page.dart';
 import 'package:preload_video/core/flows_service.dart';
 import 'package:preload_video/riverpod/view/explore_view.dart';
@@ -10,7 +12,16 @@ import 'package:preload_video/stateful_logic/stateful_explore_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    ProviderScope(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => PreloadCubit()),
+        ],
+        child: const MyApp(),
+      ),
+    ),
+  );
 }
 
 class MyApp extends ConsumerWidget {
